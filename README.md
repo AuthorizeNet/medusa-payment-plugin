@@ -1,4 +1,5 @@
-# Payment-Authorizenet-Medusa
+# Payment-Authorize.net-Medusa
+
 
 Dear Developers and E-commerce Enthusiasts,
 
@@ -10,17 +11,17 @@ Are you ready to revolutionize the world of online stores with MedusaJS? We have
 
 **Features:**
 
-**Authorize Payment** : Allow the reservation of funds on a customer's card.
+**Authorize Payment** : Authorize funds on a customer's card without immediate charge.
 
-**Capture Payment**   : Charge the reserved funds.
+**Capture Payment**   : Charge the previously authorized funds.
 
-**Auth-and-Capture**  : Authorize and capture funds in a single step.
+**Auth-and-Capture**  : Authorize and capture funds in a single seamless step.
 
-**Cancel Payment**    : Cancel a previously authorized payment.
+**Cancel Payment**    : Cancel an authorization before the payment is captured.
 
 **Void Payment**      : Void a transaction before it has been settled.
 
-**Refund Payment**    : Process refunds for settled transactions.
+**Refund Payment**    : Process refunds for transactions that have already been settled.
 
 ## Installation Made Simple
 
@@ -29,7 +30,7 @@ No hassle, no fuss! Install Payment-Authorizenet effortlessly with npm:
 
 
 [Authorize.net](https://www.authorize.net/)  an immensely popular payment gateway with a host of features. 
-This provider enables the Authorize.net payment interface on [medusa](https://medusajs.com) commerce stack
+This provider enables the Authorize.net payment interface on [Medusa](https://medusajs.com) commerce stack
 
 ## Installation
 
@@ -43,7 +44,7 @@ npm install payment-authorizenet-medusa
 ## Usage
 
 
-Register for a Authorize.net account and generate the api keys
+Register for a [Authorize.net](https://developer.authorize.net/hello_world/sandbox.html) account and generate the api keys
 In your environment file (**.env**) you need to define 
 ```
 API_LOGIN_ID=<your AUTHORIZE_NET_API_LOGIN_ID>
@@ -86,84 +87,24 @@ Install package to your next starter. This just makes it easier, importing all t
 
 ```bash
 npm install authorizenet-react 
-
+```
 or 
 
+```bash
 yarn add authorizenet-react 
 
 ```
+
 **Step 2.** 
 
-Create a button for Autorize.net **<next-starter>/src/modules/checkout/components/payment-button/authorizenet-payment-button.tsx**
+Add environment variables in the client (storefront) (**.env**)
 
-like below
-
-
-
-````
-import { Button } from "@medusajs/ui"
-import Spinner from "@modules/common/icons/spinner"
-import React, { useCallback, useEffect, useState } from "react"
-import { HttpTypes } from "@medusajs/types"
-import { cancelOrder, placeOrder, waitForPaymentCompletion } from "@lib/data/cart"
-
-
-const AnetPaymentButton = ({ notReady }: { notReady: boolean }) => {
-  const [submitting, setSubmitting] = useState(false)
-  const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  const onPaymentCompleted = async () => {
-    await placeOrder()
-      .catch((err) => {
-        setErrorMessage(err.message)
-      })
-      .finally(() => {
-        setSubmitting(false)
-      })
-  }
-
-  const handlePayment = () => {
-    setSubmitting(true)
-
-    onPaymentCompleted()
-  }
-
-  return (
-    <>
-      <Button
-        disabled={notReady}
-        isLoading={submitting}
-        onClick={handlePayment}
-        size="large"
-        data-testid="submit-order-button"
-      >
-        Place order
-      </Button>
-      <ErrorMessage
-        error={errorMessage}
-        data-testid="manual-payment-error-message"
-      />
-    </>
-  )
-}
-
-`````
-**Step 3.**
-
-Add into the payment element **<next-starter>/src/modules/checkout/components/payment-button/index.tsx**
-
-then
-```
- case isAuthorizeNet(paymentSession?.provider_id):
-        return(
-          <AnetPaymentButton
-            notReady={notReady}
-            data-testid={dataTestId}
-          />
-        )
+```bash
+  ANUTHORIZENET_PUBLIC_CLIENT_KEY= <your ANUTHORIZENET PUBLIC CLIENT KEY>
+  ANUTHORIZENET_PUBLIC_API_LOGIN_ID= <your ANUTHORIZENET API LOGIN ID>
 ```
 
-**Step 4.** 
+**Step 3.** 
 
 Add **<next-starter>/src/lib/constants.tsx**
 
@@ -175,135 +116,20 @@ export const isAuthorizeNet = (providerId?: string) => {
 
 
 // and the following to the list
-export const paymentInfoMap: Record<
-  string,
-  { title: string; icon: React.JSX.Element }
-> = {...
+
   "pp_authorizenet_authorizenet":{
     title: "Authorize.net",
     icon: <CreditCard />,
   },
-  ...}
 
 ````
 
+**Step 4.** 
 
-**Step 5.** 
-
-modify initiatePaymentSession in the client **<next-starter>/src/modules/checkout/components/payment/index.tsx**
-```
- const handleSubmit = async () => {
-    setIsLoading(true)
-    try {
-
-      const response = await createToken();
-      console.log(response);
-      
-      const shouldInputCard =
-        isStripeFunc(selectedPaymentMethod) && !activeSession
-
-      const checkActiveSession =
-        activeSession?.provider_id === selectedPaymentMethod
-
-      if (!checkActiveSession) {
-        await initiatePaymentSession(cart, {
-          provider_id: selectedPaymentMethod,
-          data: {
-            ...response,
-          },
-        })
-      }
-
-      if (!shouldInputCard) {
-        return router.push(
-          pathname + "?" + createQueryString("step", "review"),
-          {
-            scroll: false,
-          }
-        )
-      }
-    } catch (err: any) {
-      setError(err.message)
-    } finally {
-      setIsLoading(false)
-    }
-  }
- ....
-```
-
-**Step 6.** 
-
-Add a Authoirize.net Card Conatiner in **<next-starter>/src/modules/checkout/components/payment-conatiner/index.tsx**
+Add a AuthoirizenetCardConatiner in **<next-starter>/src/modules/checkout/components/payment-conatiner/index.tsx**
 
 ```
-import { Radio as RadioGroupOption } from "@headlessui/react"
-import { Text, clx } from "@medusajs/ui"
-import React, { useContext, useMemo, type JSX } from "react"
-
-import Radio from "@modules/common/components/radio"
-
-import { isManual ,isAuthorizeNet} from "@lib/constants"
-import SkeletonCardDetails from "@modules/skeletons/components/skeleton-card-details"
-import { CardElement } from "@stripe/react-stripe-js"
-import { StripeCardElementOptions } from "@stripe/stripe-js"
-import PaymentTest from "../payment-test"
-import { StripeContext } from "../payment-wrapper/stripe-wrapper"
-import { AuthorizeNetProvider,Card} from "react-authorize-net"
-
-type PaymentContainerProps = {
-  paymentProviderId: string
-  selectedPaymentOptionId: string | null
-  disabled?: boolean
-  paymentInfoMap: Record<string, { title: string; icon: JSX.Element }>
-  children?: React.ReactNode,
-  setOpaqueData ?: Function
-}
-
-const PaymentContainer: React.FC<PaymentContainerProps> = ({
-  paymentProviderId,
-  selectedPaymentOptionId,
-  paymentInfoMap,
-  disabled = false,
-  children,
-}) => {
-  const isDevelopment = process.env.NODE_ENV === "development"
-
-  return (
-    <RadioGroupOption
-      key={paymentProviderId}
-      value={paymentProviderId}
-      disabled={disabled}
-      className={clx(
-        "flex flex-col gap-y-2 text-small-regular cursor-pointer py-4 border rounded-rounded px-8 mb-2 hover:shadow-borders-interactive-with-active",
-        {
-          "border-ui-border-interactive":
-            selectedPaymentOptionId === paymentProviderId,
-        }
-      )}
-    >
-      <div className="flex items-center justify-between ">
-        <div className="flex items-center gap-x-4">
-          <Radio checked={selectedPaymentOptionId === paymentProviderId} />
-          <Text className="text-base-regular">
-            {paymentInfoMap[paymentProviderId]?.title || paymentProviderId}
-          </Text>
-          {isManual(paymentProviderId) && isDevelopment && (
-            <PaymentTest className="hidden small:block" />
-          )}
-        </div>
-        <span className="justify-self-end text-ui-fg-base">
-          {paymentInfoMap[paymentProviderId]?.icon}
-        </span>
-      </div>
-      {isManual(paymentProviderId) && isDevelopment && (
-        <PaymentTest className="small:hidden text-[10px]" />
-      )}
-      {children}
-    </RadioGroupOption>
-  )
-}
-
-export default PaymentContainer
+import { AuthorizeNetProvider,Card} from "authorizenet-react"
 
 export const AuthorizeNetCardContainer = ({
   paymentProviderId,
@@ -367,18 +193,165 @@ export const AuthorizeNetCardContainer = ({
   )
 }
 ```
-**Step 7.** 
+**Step 5.** 
 
-Add environment variables in the client (storefront) (**.env**)
+add AuthorizeNetCardContainer in the client **<next-starter>/src/modules/checkout/components/payment/index.tsx**
+```
+import PaymentContainer, {
+  StripeCardContainer,
+  AuthorizeNetCardContainer
+} from "@modules/checkout/components/payment-container"
 
-```bash
-  ANUTHORIZENET_PUBLIC_CLIENT_KEY= <your ANUTHORIZENET PUBLIC CLIENT KEY>
-  ANUTHORIZENET_PUBLIC_API_LOGIN_ID= <your ANUTHORIZENET API LOGIN ID>
+ <>
+  <RadioGroup
+    value={selectedPaymentMethod}
+    onChange={(value: string) => setPaymentMethod(value)}
+  >
+    {availablePaymentMethods.map((paymentMethod) => (
+      <div key={paymentMethod.id}>
+        {isStripeFunc(paymentMethod.id) ? (
+          <StripeCardContainer
+            paymentProviderId={paymentMethod.id}
+            selectedPaymentOptionId={selectedPaymentMethod}
+            paymentInfoMap={paymentInfoMap}
+            setCardBrand={setCardBrand}
+            setError={setError}
+            setCardComplete={setCardComplete}
+          />
+        ) :
+        (isAuthorizeNetFunc(paymentMethod.id) ? (
+          <AuthorizeNetCardContainer
+            paymentProviderId={paymentMethod.id}
+            selectedPaymentOptionId={selectedPaymentMethod}
+            paymentInfoMap={paymentInfoMap}
+            setCardBrand={setCardBrand}
+            setError={setError}
+            setCardComplete={setCardComplete}
+            setOpaqueData={setOpaqueData}
+            cardComplete={cardComplete}
+          />
+        ): (
+          <PaymentContainer
+            paymentInfoMap={paymentInfoMap}
+            paymentProviderId={paymentMethod.id}
+            selectedPaymentOptionId={selectedPaymentMethod}
+          />
+        ))}
+      </div>
+    ))}
+  </RadioGroup>
+</>
+ ....
+```
+**Step 6.** 
+
+modify initiatePaymentSession in the client **<next-starter>/src/modules/checkout/components/payment/index.tsx**
 ```
 
+import {createToken} from "authorizenet-react"
+
+
+ const handleSubmit = async () => {
+    setIsLoading(true)
+    try {
+
+      const response = await createToken();
+     
+      const shouldInputCard =
+        isStripeFunc(selectedPaymentMethod) && !activeSession
+
+      const checkActiveSession =
+        activeSession?.provider_id === selectedPaymentMethod
+
+      if (!checkActiveSession) {
+        await initiatePaymentSession(cart, {
+          provider_id: selectedPaymentMethod,
+          data: {
+            ...response,
+            cart // provides cart data to plugin
+          },
+        })
+      }
+
+      if (!shouldInputCard) {
+        return router.push(
+          pathname + "?" + createQueryString("step", "review"),
+          {
+            scroll: false,
+          }
+        )
+      }
+    } catch (err: any) {
+      setError(err.message)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+ ....
+```
+**Step 7.** 
+
+Create a button for Autorize.net **<next-starter>/src/modules/checkout/components/payment-button/authorizenet-payment-button.tsx**
+
+like below
+
+````
+const AuthorizenetPaymentButton = ({ notReady }: { notReady: boolean }) => {
+  const [submitting, setSubmitting] = useState(false)
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+
+  const onPaymentCompleted = async () => {
+    await placeOrder()
+      .catch((err) => {
+        setErrorMessage(err.message)
+      })
+      .finally(() => {
+        setSubmitting(false)
+      })
+  }
+
+  const handlePayment = () => {
+    setSubmitting(true)
+
+    onPaymentCompleted()
+  }
+
+  return (
+    <>
+      <Button
+        disabled={notReady}
+        isLoading={submitting}
+        onClick={handlePayment}
+        size="large"
+        data-testid="submit-order-button"
+      >
+        Place order
+      </Button>
+      <ErrorMessage
+        error={errorMessage}
+        data-testid="manual-payment-error-message"
+      />
+    </>
+  )
+}
+
+`````
+**Step 8.**
+
+Add into the payment element **<next-starter>/src/modules/checkout/components/payment-button/index.tsx**
+
+then
+```
+ case isAuthorizeNet(paymentSession?.provider_id):
+        return(
+          <AuthorizenetPaymentButton
+            notReady={notReady}
+            data-testid={dataTestId}
+          />
+        )
+```
 #### watch out
 
-Step 6. 
 Caveat the default starter template has an option which says use the same shipping and billing address
 please ensure you deselect this and enter the phone number manually in the billing section.
 
