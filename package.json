@@ -66,5 +66,13 @@
     "medusa-plugin-payment",
     "medusa-v2",
     "medusa-plugin-integration"
-  ]
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AuthorizeNet/medusa-payment-plugin.git"
+  },
+  "homepage": "https://github.com/AuthorizeNet/medusa-payment-plugin#readme",
+  "bugs": {
+    "url": "https://github.com/AuthorizeNet/medusa-payment-plugin/issues"
+  }
 }
