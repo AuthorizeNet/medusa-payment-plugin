@@ -28,7 +28,7 @@ import {
   PaymentSessionStatus,
 } from "@medusajs/framework/utils";
 import { PaymentIntentOptions } from "../types";
-import { APIContracts, APIControllers } from "authorizenet";
+import { APIContracts, APIControllers, Constants } from "authorizenet";
 import { BigNumberRawValue } from "@medusajs/framework/types";
 
 abstract class AuthorizenetBase extends AbstractPaymentProvider {
@@ -89,7 +89,13 @@ abstract class AuthorizenetBase extends AbstractPaymentProvider {
     merchantAuthenticationType.setTransactionKey(this.options_.transaction_key);
     return merchantAuthenticationType;
   }
-
+  // START GENAI
+  private getEnvironment() {
+    return this.options_.enviornment === "production"
+      ? Constants.endpoint.production
+      : Constants.endpoint.sandbox;
+  }
+  // END GENAI
   private async executeTransaction(
     createRequest: APIContracts.CreateTransactionRequest,
     data: Record<string, unknown>
@@ -98,7 +104,7 @@ abstract class AuthorizenetBase extends AbstractPaymentProvider {
     const ctrl = new APIControllers.CreateTransactionController(
       createRequest.getJSON()
     );
-
+    ctrl.setEnvironment(this.getEnvironment());
     return new Promise((resolve, reject) => {
       ctrl.execute(() => {
         const apiResponse = ctrl.getResponse();
@@ -355,7 +361,7 @@ abstract class AuthorizenetBase extends AbstractPaymentProvider {
     const ctrl = new APIControllers.GetTransactionDetailsController(
       getRequest.getJSON()
     );
-
+    ctrl.setEnvironment(this.getEnvironment());
     return new Promise((resolve, reject) => {
       try {
         ctrl.execute(() => {

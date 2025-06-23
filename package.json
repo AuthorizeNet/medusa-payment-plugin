@@ -1,6 +1,6 @@
 {
   "name": "payment-authorizenet-medusa",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Authorizenet payment provider for Medusa v2",
   "main": "dist/index.js",
   "files": [

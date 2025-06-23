@@ -45,13 +45,13 @@ npm install payment-authorizenet-medusa
 
 
 Register for a [Authorize.net](https://developer.authorize.net/hello_world/sandbox.html) account and generate the api keys
-In your environment file (**.env**) you need to define 
+In your environment file (**.env**) define the API Login ID and Transaction Key:
 ```
 API_LOGIN_ID=<your AUTHORIZE_NET_API_LOGIN_ID>
 TRANSACTION_KEY=<your AUTHORIZE_NET_TRANSACTION_KEY>
 
 ```
-You need to add the provider into your **medusa-config.ts** as shown below
+You need to add the provider into your **medusa-config.ts** as shown below:
 
 ```
 module.exports = defineConfig({
@@ -79,11 +79,11 @@ modules: [
 ## Client side configuration
 
 
-For the NextJs start you need to  make the following changes 
+For the NextJs start, make the following changes 
 
 **Step 1.**
 
-Install package to your next starter. This just makes it easier, importing all the scripts implicitly
+Install package to your next starter. This simplifies the process by importing all the scripts implicitly
 
 ```bash
 npm install authorizenet-react 
@@ -97,7 +97,7 @@ yarn add authorizenet-react
 
 **Step 2.** 
 
-Add environment variables in the client (storefront) (**.env**)
+Add environment variables in the client (storefront) (**.env**) file:
 
 ```bash
   ANUTHORIZENET_PUBLIC_CLIENT_KEY= <your ANUTHORIZENET PUBLIC CLIENT KEY>
