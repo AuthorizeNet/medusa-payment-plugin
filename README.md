@@ -99,6 +99,8 @@ yarn add authorizenet-react
 
 Add environment variables in the client (storefront) (**.env**) file:
 
+Note :  To generate the Client Key, log in to the Merchant Interface as an Administrator and navigate to Account > Settings > Security Settings > General Security Settings > Manage Public Client Key
+
 ```bash
   ANUTHORIZENET_PUBLIC_CLIENT_KEY= <your ANUTHORIZENET PUBLIC CLIENT KEY>
   ANUTHORIZENET_PUBLIC_API_LOGIN_ID= <your ANUTHORIZENET API LOGIN ID>
@@ -118,7 +120,7 @@ export const isAuthorizeNet = (providerId?: string) => {
 // and the following to the list
 
   "pp_authorizenet_authorizenet":{
-    title: "Authorize.net",
+    title: "Credit Card", // or Authorize.net as per users perference 
     icon: <CreditCard />,
   },
 
@@ -355,7 +357,7 @@ then
 Caveat the default starter template has an option which says use the same shipping and billing address
 please ensure you deselect this and enter the phone number manually in the billing section.
 
-
+For more info on medusa modules. Please refer https://docs.medusajs.com/learn
 
 ## Contributing
 

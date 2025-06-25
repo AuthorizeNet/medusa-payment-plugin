@@ -475,9 +475,9 @@ abstract class AuthorizenetBase extends AbstractPaymentProvider {
   /*
   /**
    * @param {object} data - the data of the webhook request: req.body
-   * @param {object} signature - the Razorpay signature on the event, that
+   * @param {object} signature - the Authorize.net signature on the event, that
    *    ensures integrity of the webhook event
-   * @return {object} Razorpay Webhook event
+   * @return {object} Authorize.net Webhook event
    */
 
   constructWebhookEvent(data, signature): boolean {
@@ -492,7 +492,7 @@ abstract class AuthorizenetBase extends AbstractPaymentProvider {
     ) {
       throw new MedusaError(
         MedusaErrorTypes.INVALID_ARGUMENT,
-        "razorpay not configured",
+        "Authorize.net not configured",
         MedusaErrorCodes.CART_INCOMPATIBLE_STATE
       );
     }
